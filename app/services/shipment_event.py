@@ -2,6 +2,8 @@
 from app.database.models import Shipment, ShipmentEvent, ShipmentStatus
 from app.services.base import BaseService
 from app.services.notification import NotificationService
+from app.config import app_settings
+from app.utils import generate_url_safe_token
 
 
 class ShipmentEventService(BaseService):
@@ -80,6 +82,8 @@ class ShipmentEventService(BaseService):
             case ShipmentStatus.delivered:
                 subject = "Your Order is Delivered ✅"
                 context["seller"] = shipment.seller.name
+                token = generate_url_safe_token({"id": str(shipment.id)}, salt="review-shipment")
+                context["review_url"] = f"{app_settings.APP_DOMAIN}/shipment/review?token={token}"
                 template_name = "mail_delivered.html"
 
             case ShipmentStatus.cancelled:

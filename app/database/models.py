@@ -5,7 +5,7 @@ import time
 from typing import Optional
 from uuid import uuid4, UUID
 from pydantic import EmailStr
-from sqlalchemy import ARRAY, INTEGER
+from sqlalchemy import ARRAY, INTEGER, table
 from sqlmodel import Column, Field, Relationship, SQLModel
 from sqlalchemy.dialects import postgresql
 
@@ -52,6 +52,12 @@ class Shipment(SQLModel, table = True):
     delivery_partner_id: Optional[UUID] = Field(default=None, foreign_key="delivery_partner.id",)
     delivery_partner: "DeliveryPartner" = Relationship(back_populates="shipments", 
                                                       sa_relationship_kwargs={"lazy": "selectin"},)
+    review: "Review" = Relationship(
+        back_populates="shipment",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
+    
+    
     @property
     def status(self):
         return self.timeline[-1].status if len(self.timeline) > 0 else None 
@@ -151,3 +157,29 @@ class DeliveryPartner(User, table=True):
     @property    
     def current_handling_capacity(self):
         return self.max_handling_capacity - len(self.active_shipments)
+    
+class Review(SQLModel, table=True):
+    __tablename__ = "reviews"
+    
+    id: UUID = Field(
+        sa_column=Column(
+            postgresql.UUID,
+            default=uuid4,
+            primary_key=True
+        )
+    )
+    
+    created_at: datetime = Field(
+        sa_column=Column(
+            postgresql.TIMESTAMP,
+            default=datetime.now
+        )
+    )
+    rating: int = Field(ge=1, le=5)
+    comment: str | None = Field(default=None)
+    
+    shipment_id: UUID = Field(foreign_key="shipment.id")
+    shipment: Shipment = Relationship(
+        back_populates="review",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
