@@ -51,7 +51,9 @@ async def update_shipment(
             detail="No data provided to update",
         )
 
-    return await service.update(id, update)
+
+    
+    return await service.update(id, shipment_update, partner)
 
 
 ### Delete a shipment by id

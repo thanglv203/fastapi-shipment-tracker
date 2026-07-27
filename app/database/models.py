@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
+import time
 from typing import Optional
 from uuid import uuid4, UUID
 from pydantic import EmailStr
@@ -38,7 +39,7 @@ class Shipment(SQLModel, table = True):
     destination: int
     estimated_delivery: datetime
     
-    timeline: list["ShipmentEvent"] = Relationship(back_populates="shipment")
+    timeline: list["ShipmentEvent"] = Relationship(back_populates="shipment", sa_relationship_kwargs={"lazy": "selectin"},)
     
     seller_id: UUID = Field(foreign_key="seller.id")
     seller: "Seller" = Relationship(back_populates="shipments",
@@ -47,7 +48,10 @@ class Shipment(SQLModel, table = True):
     delivery_partner_id: Optional[UUID] = Field(default=None, foreign_key="delivery_partner.id",)
     delivery_partner: "DeliveryPartner" = Relationship(back_populates="shipments", 
                                                       sa_relationship_kwargs={"lazy": "selectin"},)
-
+    @property
+    def status(self):
+        return self.timeline[-1].status if len(self.timeline) > 0 else None 
+    
 class ShipmentEvent(SQLModel, table = True):
     __tablename__ = "shipment_event"
     
