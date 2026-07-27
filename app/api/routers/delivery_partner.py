@@ -49,7 +49,11 @@ async def update_delivery_partner(
         partner.sqlmodel_update(update)
     )    
     
-    
+### Verify delivery partner email
+@router.get("/verify")
+async def verify_delivery_partner_email(token: str, service: DeliveryPartnerDep, ):
+    await service.verify_email(token)
+    return {"detail": "Account verified"}  
 
 ### Logout the delivery partner 
 @router.get("/logout")

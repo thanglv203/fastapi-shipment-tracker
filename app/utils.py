@@ -1,13 +1,17 @@
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from tkinter import NO
 from uuid import uuid4
 
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 import jwt
 
 from app.config import security_settings
 
 APP_DIR = Path(__file__).resolve().parent
 TEMPLATE_DIR = APP_DIR/"templates"
+
+_serializer = URLSafeTimedSerializer(security_settings.JWT_SECRET)
 
 def generate_access_token(
     data: dict,
@@ -33,3 +37,15 @@ def decode_access_token(token: str) -> dict | None:
         )
     except jwt.PyJWTError:
         return None
+
+def generate_url_safe_token(data: dict) -> str:
+    return _serializer.dumps(data)
+
+def decode_url_safe_token(token: str, expiry: timedelta | None = None) -> dict | None:
+    try:
+        return _serializer.loads(
+            token,
+            max_age=expiry.total_seconds() if expiry else None, 
+        )
+    except (BadSignature, SignatureExpired):
+        return None    

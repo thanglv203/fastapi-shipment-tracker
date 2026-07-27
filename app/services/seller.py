@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import BackgroundTasks, HTTPException, status
 
 
 from sqlalchemy import select
@@ -12,12 +12,13 @@ from app.utils import generate_access_token
 
 
 class SellerService(UserService):
-    def __init__(self, session: AsyncSession):
-        super().__init__(Seller, session)
+    def __init__(self, session: AsyncSession, tasks: BackgroundTasks):
+        super().__init__(Seller, session, tasks)
 
     async def add(self, seller_create: SellerCreate) -> Seller:
         return await self._add_user(
-            seller_create.model_dump()
+            seller_create.model_dump(),
+            "seller"
         )
     
     async def token(self, email, password) -> str:

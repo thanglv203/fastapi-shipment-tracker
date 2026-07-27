@@ -29,6 +29,13 @@ async def login_seller(
         "type": "jwt",
     }
 
+### Verify seller email
+@router.get("/verify")
+async def verify_seller_email(token: str, service: SellerServiceDep):
+    await service.verify_email(token)
+    return {"detail": "Account verified"}
+
+
 ### Logout the user 
 @router.get("/logout")
 async def logout_seller(
