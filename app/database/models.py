@@ -15,6 +15,7 @@ class ShipmentStatus(str, Enum):
     in_transit = "in_transit"
     out_for_delivery = "out_for_delivery"
     delivered = "delivered"
+    cancelled = "cancelled"
 
 
 class Shipment(SQLModel, table = True):
@@ -33,6 +34,9 @@ class Shipment(SQLModel, table = True):
             default=datetime.now
         )
     )
+    
+    client_contact_email: EmailStr
+    client_contact_phone: int | None
     
     content: str
     weight: float = Field(le=25)
@@ -140,6 +144,7 @@ class DeliveryPartner(User, table=True):
             shipment
             for shipment in self.shipments
             if shipment.status != ShipmentStatus.delivered
+            or shipment.status != ShipmentStatus.cancelled
         ]
     
     @property    
