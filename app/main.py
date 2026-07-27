@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
+from datetime import datetime
 
 from fastapi import BackgroundTasks, FastAPI
+from fastapi.responses import JSONResponse
 from scalar_fastapi import get_scalar_api_reference
 
 from app.api.router import master_router
@@ -20,17 +22,6 @@ app = FastAPI(
 )
 
 app.include_router(master_router)
-
-@app.get("/mail")
-def send_test_mail(tasks: BackgroundTasks):
-    
-    tasks.add_task(
-        NotificationService
-    )
-    
-    NotificationService().send_email(
-        
-    )
 
 
 ### Scalar API Documentation
