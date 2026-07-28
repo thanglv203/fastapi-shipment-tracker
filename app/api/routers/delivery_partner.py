@@ -1,12 +1,20 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.database.redis import add_jti_to_blacklist
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from ..dependencies import DeliveryPartnerDep, DeliveryPartnerServiceDep, SellerServiceDep, get_partner_access_token
-from ..schemas.delivery_partner import DeliveryPartnerCreate, DeliveryPartnerRead, DeliveryPartnerUpdate
+from ..dependencies import (
+    DeliveryPartnerDep,
+    DeliveryPartnerServiceDep,
+    get_partner_access_token,
+)
+from ..schemas.delivery_partner import (
+    DeliveryPartnerCreate,
+    DeliveryPartnerRead,
+    DeliveryPartnerUpdate,
+)
 
 router = APIRouter(prefix="/partner", tags=["Delivery Partner"])
 
@@ -51,7 +59,7 @@ async def update_delivery_partner(
     
 ### Verify delivery partner email
 @router.get("/verify")
-async def verify_delivery_partner_email(token: str, service: DeliveryPartnerDep, ):
+async def verify_delivery_partner_email(token: str, service: DeliveryPartnerServiceDep, ):
     await service.verify_email(token)
     return {"detail": "Account verified"}  
 

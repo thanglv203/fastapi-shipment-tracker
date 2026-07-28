@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from tkinter import NO
 from uuid import uuid4
 
-from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 import jwt
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 from app.config import security_settings
 

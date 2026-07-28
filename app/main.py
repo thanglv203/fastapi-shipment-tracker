@@ -1,13 +1,10 @@
 from contextlib import asynccontextmanager
-from datetime import datetime
 
-from fastapi import BackgroundTasks, FastAPI
-from fastapi.responses import JSONResponse
 from scalar_fastapi import get_scalar_api_reference
 
 from app.api.router import master_router
 from app.database.session import create_db_tables
-from app.services.notification import NotificationService
+from fastapi import FastAPI
 
 
 @asynccontextmanager

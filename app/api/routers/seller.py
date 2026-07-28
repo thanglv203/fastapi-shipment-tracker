@@ -1,14 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr
-from websockets import route
-from app.config import app_settings
 
+from app.config import app_settings
 from app.database.redis import add_jti_to_blacklist
 from app.utils import TEMPLATE_DIR
+from fastapi import APIRouter, Depends, Form, Request
 
 from ..dependencies import SellerServiceDep, get_seller_access_token
 from ..schemas.seller import SellerCreate, SellerRead

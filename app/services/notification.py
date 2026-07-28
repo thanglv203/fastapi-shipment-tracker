@@ -1,8 +1,9 @@
-from fastapi import BackgroundTasks
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
+
 from app.config import notification_settings
 from app.utils import TEMPLATE_DIR
+from fastapi import BackgroundTasks
 
 
 class NotificationService:

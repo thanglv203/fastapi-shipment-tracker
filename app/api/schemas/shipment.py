@@ -1,8 +1,9 @@
 from datetime import datetime
 from uuid import UUID
+
 from pydantic import BaseModel, EmailStr, Field
 
-from app.database.models import Seller, ShipmentEvent, ShipmentStatus
+from app.database.models import ShipmentEvent, ShipmentStatus, TagName
 
 
 class BaseShipment(BaseModel):
@@ -10,11 +11,15 @@ class BaseShipment(BaseModel):
     weight: float = Field(le=25)
     destination: int
 
+class TagRead(BaseModel):
+    name: TagName
+    instruction: str
 
 class ShipmentRead(BaseShipment):
     id: UUID
     timeline: list[ShipmentEvent]
     estimated_delivery: datetime
+    tags: list[TagRead]
 
 
 class ShipmentCreate(BaseShipment):

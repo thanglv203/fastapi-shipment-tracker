@@ -1,12 +1,12 @@
 from typing import Sequence
 
-from fastapi import BackgroundTasks, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import any_, select
 
-from sqlmodel import select, any_
 from app.api.schemas.delivery_partner import DeliveryPartnerCreate
 from app.database.models import DeliveryPartner, Shipment
 from app.services.user import UserService
+from fastapi import BackgroundTasks, HTTPException, status
 
 
 class DeliveryPartnerService(UserService):

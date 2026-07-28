@@ -1,8 +1,8 @@
 
+from app.config import app_settings
 from app.database.models import Shipment, ShipmentEvent, ShipmentStatus
 from app.services.base import BaseService
 from app.services.notification import NotificationService
-from app.config import app_settings
 from app.utils import generate_url_safe_token
 
 

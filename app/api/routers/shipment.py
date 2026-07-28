@@ -1,19 +1,17 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Form, HTTPException, Request, status
-from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.config import app_settings
-from app.services.shipment import ShipmentService
+from app.database.models import TagName
 from app.utils import TEMPLATE_DIR
+from fastapi import APIRouter, Form, HTTPException, Request, status
 
 from ..dependencies import DeliveryPartnerDep, SellerDep, ShipmentServiceDep
 from ..schemas.shipment import (
     ShipmentCreate,
     ShipmentRead,
-    ShipmentReview,
     ShipmentUpdate,
 )
 
@@ -122,3 +120,31 @@ async def submit_review(
 ):
     await service.rate(token, rating, comment)
     return {"detail": "Review submitted"}
+
+### Get all shipments with a tag
+# @router.get("/tagged", response_model=list[ShipmentRead])
+# async def get_shipments_with_tag(
+#     tag_name: TagName,
+#     session: SessionDep,
+# ):
+#     tag = await tag_name.tag(session)
+#     return tag.shipments
+
+### Add a tag to a shipment
+@router.get("/tag", response_model=ShipmentRead)
+async def add_tag_to_shipment(
+    id: UUID,
+    tag_name: TagName,
+    service: ShipmentServiceDep,
+):
+    return await service.add_tag(id, tag_name)
+
+
+### Remove a tag from a shipment
+@router.delete("/tag", response_model=ShipmentRead)
+async def remove_tag_from_shipment(
+    id: UUID,
+    tag_name: TagName,
+    service: ShipmentServiceDep,
+):
+    return await service.remove_tag(id, tag_name)

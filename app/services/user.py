@@ -1,19 +1,20 @@
 from datetime import timedelta
-from multiprocessing import context
 from uuid import UUID
 
-from fastapi import BackgroundTasks, HTTPException, status
-from sqlmodel import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.services.base import BaseService
-from app.config import app_settings
-
-from app.database.models import User
 from passlib.context import CryptContext
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
 
+from app.config import app_settings
+from app.database.models import User
+from app.services.base import BaseService
 from app.services.notification import NotificationService
-from app.utils import decode_url_safe_token, generate_access_token, generate_url_safe_token
+from app.utils import (
+    decode_url_safe_token,
+    generate_access_token,
+    generate_url_safe_token,
+)
+from fastapi import BackgroundTasks, HTTPException, status
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
