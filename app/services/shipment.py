@@ -123,8 +123,21 @@ class ShipmentService(BaseService):
         return shipment
 
     # Delete a shipment
-    async def delete(self, id: int) -> None:
-        await self._delete(await self.get(id))
+    async def delete(self, id: UUID, seller: Seller) -> None:
+        shipment = await self.get(id)
+        
+        if shipment is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Given id doesn't exist!",
+            )
+        if shipment.seller_id != seller.id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not authorized",
+            )
+
+        await self._delete(shipment)
         
     async def add_tag(self, id: UUID, tag_name: TagName):
         shipment = await self.get(id)

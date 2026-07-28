@@ -1,6 +1,7 @@
 from datetime import timedelta
 from uuid import UUID
 
+from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
@@ -14,7 +15,6 @@ from app.utils import (
     generate_access_token,
     generate_url_safe_token,
 )
-from fastapi import BackgroundTasks, HTTPException, status
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -51,7 +51,10 @@ class UserService(BaseService):
         return user
     
     async def verify_email(self, token: str):
-        token_data = decode_url_safe_token(token, salt="email-verify")
+        token_data = decode_url_safe_token(
+            token, 
+            salt="email-verify",
+            expiry=timedelta(days=1))
         
         if not token_data:
             raise HTTPException(
@@ -99,6 +102,9 @@ class UserService(BaseService):
 
     async def send_password_reset_link(self, email, router_prefix):
         user = await self._get_by_email(email)
+        
+        if user is None:
+            return
         
         token = generate_url_safe_token({"id": str(user.id)}, salt="password-reset")
         

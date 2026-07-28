@@ -208,7 +208,7 @@ class DeliveryPartner(User, table=True):
         return self.max_handling_capacity - len(self.active_shipments)
     
 class Review(SQLModel, table=True):
-    __tablename__ = "reviews"
+    __tablename__ = "review"
     
     id: UUID = Field(
         sa_column=Column(

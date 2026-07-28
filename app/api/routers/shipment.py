@@ -40,6 +40,13 @@ async def get_tracking(request: Request, id: UUID, service: ShipmentServiceDep):
     # Check for shipment with given id
     shipment = await service.get(id)
     
+    if shipment is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Given id doesn't exist!",
+        )
+
+    
     context = shipment.model_dump()
     context["status"] = shipment.status
     context["partner"] = shipment.delivery_partner.name
@@ -92,7 +99,7 @@ async def cancel_shipment(id: UUID, seller: SellerDep, service: ShipmentServiceD
 
 ### Delete a shipment by id
 @router.delete("/")
-async def delete_shipment(id: UUID, service: ShipmentServiceDep) -> dict[str, str]:
+async def delete_shipment(id: UUID, seller: SellerDep, service: ShipmentServiceDep) -> dict[str, str]:
     # Remove from database
     await service.delete(id)
 

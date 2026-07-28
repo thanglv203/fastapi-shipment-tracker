@@ -58,11 +58,6 @@ Client ──► Router (HTTP layer)          FastAPI + Pydantic schemas
 
 **Auth dependency chain** — protecting an endpoint takes one parameter:
 
-```python
-@router.post("/", response_model=ShipmentRead)
-async def submit_shipment(seller: SellerDep, ...):   # 401 handled automatically
-```
-
 ```
 oauth2_scheme → decode JWT → jti blacklist check → load user from DB → SellerDep
 ```
@@ -249,8 +244,6 @@ placed → in_transit → out_for_delivery → delivered → review ⭐
 
 ## 📄 License
 
-MIT — free to use, modify and distribute.
 
 ---
 
-*Built while completing a hands-on FastAPI course — from a single `GET /` endpoint to a fully-featured async delivery platform.* 🎓
